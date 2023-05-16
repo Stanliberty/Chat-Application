@@ -1,0 +1,92 @@
+
+
+Class ChatServer implements ISend
+    Properties:
+        - observers: List of IReceiver
+
+    Method registerObserver(IReceiver receiver)
+        Add receiver to observers list
+
+    Method sendMessage(String message, IReceiver sender)
+        For each receiver in observers list
+            If receiver is not equal to sender
+                Call receiver.receiveMessage with message and sender
+
+
+Class ChatUser implements IReceiver, ISend
+    Properties:
+        - name: String
+        - server: ChatServer
+        - chatWindow: ChatWindow
+
+    Constructor(String name, ChatServer server)
+        Initialize name and server properties
+
+    Method setChatWindow(ChatWindow chatWindow)
+        Set chatWindow property
+
+    Method receiveMessage(String message, IReceiver sender)
+        Call chatWindow.displayMessage with sender's name and received message
+
+    Method sendMessage(String message, IReceiver sender)
+        Call server.sendMessage with message and this user as sender
+        Call chatWindow.displayMessage with sender's name and sent message
+
+    Method toString()
+        Return name
+
+
+
+Class ChatWindow
+    Properties:
+        - chatTextArea: JTextArea
+        - inputTextField: JTextField
+        - sendButton: JButton
+        - user: ChatUser
+        - x: int
+
+    Constructor(ChatUser user)
+        Initialize chatTextArea, inputTextField, and sendButton
+        Set title and size of JFrame
+        Set default close operation
+        Set layout manager for JFrame
+        Add chatTextArea to JFrame's center
+        Add inputTextField and sendButton to a JPanel, and add it to JFrame's south
+        Set x to 0
+
+    Method display()
+        Set JFrame visible
+
+    Method displayMessage(String message)
+        Append message to chatTextArea
+
+    Class InputTextFieldListener implements ActionListener
+        Method actionPerformed(ActionEvent e)
+            Get text from inputTextField
+            Call user.sendMessage with message and user
+            Clear inputTextField
+
+    Class SendButtonListener implements ActionListener
+        Method actionPerformed(ActionEvent e)
+            Get text from inputTextField
+            Call user.sendMessage with message and user
+            Clear inputTextField
+
+Main
+    Create multiple instances of ChatUser, e.g., user1, user2, user3
+    For each user:
+        Create an instance of ChatWindow with the user as parameter, e.g., chatWindow1 for user1, chatWindow2 for user2, etc.
+        Call display() on the ChatWindow instance
+Class Main
+    Method main(String[] args)
+        Create a new ChatServer object called server
+
+        Create ChatUser objects user1, user2, user3 with names "User 1", "User 2", "User 3" respectively, and passing server as the ChatServer object
+
+        Call server.registerObserver for each user to register them as observers
+
+        Create ChatWindow objects window1, window2, window3 with corresponding users
+
+        Call user.setChatWindow for each user to set their ChatWindow
+
+        Call window.display() for each window to display them
